@@ -56,12 +56,9 @@ export function EcdfChart({ students, scale, score }: Props) {
               label={{ value: String(MIN_GRADE + 1 + index), position: 'top', fill: '#f0ad4e', fontSize: 12 }}
             />
           ))}
-          <ReferenceLine
-            x={score}
-            stroke="#17c3b2"
-            strokeWidth={2}
-            label={{ value: 'me', position: 'top', fill: '#17c3b2', fontSize: 12 }}
-          />
+          {/* The supposed student: unlabeled, identified by the marker teal
+              shared with the scale arrow and the score readout. */}
+          <ReferenceLine x={score} stroke="#17c3b2" strokeWidth={2} />
           <Line type="stepAfter" dataKey="fraction" stroke="#4caf50" dot={false} strokeWidth={2} isAnimationActive={false} />
         </LineChart>
       </ResponsiveContainer>
