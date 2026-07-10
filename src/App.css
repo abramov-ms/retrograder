@@ -186,9 +186,26 @@
 }
 
 .task-row input[type='checkbox'] {
+  appearance: none;
   width: 18px;
   height: 18px;
-  accent-color: var(--green);
+  flex: none;
+  margin: 0;
+  border: 2px solid var(--border);
+  border-radius: 5px;
+  background: var(--panel-bg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* The dark border keeps the checked box visible on the solved-green row. */
+.task-row input[type='checkbox']:checked {
+  background-color: var(--green);
+  border-color: #08060d;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5 6.5 12 13 4.5' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 13px;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .task-name {
