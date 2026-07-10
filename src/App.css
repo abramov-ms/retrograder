@@ -4,6 +4,28 @@
   padding: 0 24px 48px;
 }
 
+/* On narrow (mobile) screens the app doesn't render properly; show a hint
+   to reopen on a PC instead. */
+.mobile-notice {
+  display: none;
+  padding: 48px 32px;
+  text-align: center;
+}
+
+.mobile-notice h1 {
+  color: var(--accent);
+}
+
+@media (max-width: 700px) {
+  .mobile-notice {
+    display: block;
+  }
+
+  .app {
+    display: none;
+  }
+}
+
 .app-header {
   display: flex;
   align-items: center;

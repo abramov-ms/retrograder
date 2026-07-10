@@ -75,8 +75,18 @@ export default function App() {
   }
 
   return (
-    <div className="app">
-      <header className="app-header">
+    <>
+      {/* Shown instead of the app on narrow screens (see App.css): the split
+          view and the draggable scale don't work on a phone. */}
+      <div className="mobile-notice">
+        <h1>retrograder</h1>
+        <p>
+          This tool is built for desktop screens — the split view and the draggable grading scale need room to
+          breathe. Please reopen it on a PC.
+        </p>
+      </div>
+      <div className="app">
+        <header className="app-header">
         <h1>retrograder</h1>
         <nav className="mode-tabs">
           <button className={mode === 'what-if' ? 'tab tab-active' : 'tab'} onClick={() => setMode('what-if')}>
@@ -107,6 +117,7 @@ export default function App() {
           <ScaleEditor scale={effectiveScale} onChange={setScale} maxPoints={maxPoints} score={score} />
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }
