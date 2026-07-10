@@ -34,7 +34,7 @@ function SortableTask({ group, task, onUpdate, onRemove, onBlur }: SortableTaskP
   return (
     <div
       ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition }}
+      style={{ transform: CSS.Translate.toString(transform), transition }}
       className={(task.solved ? 'task-row solved' : 'task-row') + (isDragging ? ' dragging' : '')}
     >
       <span className="drag-handle" title="Drag to reorder" {...attributes} {...listeners}>
@@ -83,7 +83,7 @@ function SortableGroup({ group, children, onRename, onRemove, onBlur, actions }:
   return (
     <div
       ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition }}
+      style={{ transform: CSS.Translate.toString(transform), transition }}
       className={isDragging ? 'task-group dragging' : 'task-group'}
     >
       <div className="task-group-header">
