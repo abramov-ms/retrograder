@@ -42,6 +42,10 @@ export function TaskList({ groups, onChange, scale }: Props) {
     onChange(groups.map((group) => ({ ...group, tasks: group.tasks.map((task) => ({ ...task, solved })) })))
   }
 
+  const setGroupSolved = (group: TaskGroup, solved: boolean) => {
+    updateGroup(group.id, { tasks: group.tasks.map((task) => ({ ...task, solved })) })
+  }
+
   const tasks = allTasks(groups)
 
   return (
@@ -62,9 +66,6 @@ export function TaskList({ groups, onChange, scale }: Props) {
               value={group.name}
               onChange={(e) => updateGroup(group.id, { name: e.target.value })}
             />
-            <span className="hint">
-              {totalScore(group.tasks)} / {maxScore(group.tasks)} pts
-            </span>
             <button className="icon-button" title="Remove group" onClick={() => removeGroup(group.id)}>
               ✕
             </button>
@@ -96,9 +97,14 @@ export function TaskList({ groups, onChange, scale }: Props) {
               </div>
             ))}
           </div>
-          <button className="add-task" onClick={() => addTask(group)}>
-            + Add task
-          </button>
+          <div className="task-actions">
+            <button onClick={() => addTask(group)}>+ Add task</button>
+            <button onClick={() => setGroupSolved(group, true)}>Solve all</button>
+            <button onClick={() => setGroupSolved(group, false)}>Clear</button>
+            <span className="hint">
+              {totalScore(group.tasks)} / {maxScore(group.tasks)} pts
+            </span>
+          </div>
         </div>
       ))}
       <div className="task-actions">
