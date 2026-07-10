@@ -46,7 +46,7 @@ export function CsvImport({ studentCount, onImport }: Props) {
             choose a file
           </button>
         </p>
-        <p className="hint">Columns: nickname, name, total score (header optional)</p>
+        <p className="hint">Columns: nickname, total score (header optional)</p>
         <input
           ref={fileInput}
           type="file"

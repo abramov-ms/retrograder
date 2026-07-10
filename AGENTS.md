@@ -22,8 +22,10 @@ backend and none is planned. All state lives in the browser (localStorage).
   students solve before the soft deadline.) Tasks are organized into named
   **groups** (e.g. per homework) purely for convenience — groups never affect
   grading, which only sees the flat task list (`allTasks`).
-- **Student CSV**: three columns — nickname, full name, total score (one row
-  per student, last year's results). Grades are derived from the total score
+- **Student CSV**: two columns — nickname, total score (one row per student,
+  last year's results; no full names, deliberately). The importer takes the
+  first column as nickname and the *last* as score, so legacy files with
+  extra middle columns still work. Grades are derived from the total score
   via the current scale. A header row may or may not be present.
   `scripts/convert_grades.py` produces this file from a Manytask grades
   export (one column per task, 1 = solved) by joining it with

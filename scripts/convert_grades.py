@@ -5,8 +5,8 @@ The export (grades.csv) has some student metadata columns followed by one
 column per task, where 1 means solved and 0/empty means not solved. Task
 point values are taken from src/data/tasks.yaml; seminar points (the
 export's own points column) are added on top. The output is the
-three-column CSV (nickname, name, score) that the web app's retro mode
-imports.
+two-column CSV (nickname, score) that the web app's retro mode imports -
+full names are deliberately left out.
 
 Usage: python3 scripts/convert_grades.py [grades.csv [output.csv]]
 
@@ -74,7 +74,6 @@ def main() -> int:
             print(f"warning: row {i} has no login, skipped")
             skipped += 1
             continue
-        name = f"{(row.get('Имя') or '').strip()} {(row.get('Фамилия') or '').strip()}".strip()
         seminars = (row.get("Баллы за семинары") or "").strip()
         try:
             score = int(seminars or 0)
@@ -87,17 +86,17 @@ def main() -> int:
                 score += points[column]
             elif cell not in ("", "0"):
                 print(f"warning: row {i} ({login}), task {column}: unexpected value {cell!r}, treated as unsolved")
-        students.append((login, name, score))
+        students.append((login, score))
 
     with out_path.open("w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["nickname", "name", "score"])
+        writer.writerow(["nickname", "score"])
         writer.writerows(students)
 
-    total = sum(s[2] for s in students)
+    total = sum(s[1] for s in students)
     print(f"{len(students)} students written to {out_path.relative_to(ROOT)} ({skipped} skipped)")
-    print(f"joined {len(task_columns)} task columns; scores: min {min(s[2] for s in students)}, "
-          f"max {max(s[2] for s in students)}, mean {total / len(students):.0f}")
+    print(f"joined {len(task_columns)} task columns; scores: min {min(s[1] for s in students)}, "
+          f"max {max(s[1] for s in students)}, mean {total / len(students):.0f}")
     return 0
 
 

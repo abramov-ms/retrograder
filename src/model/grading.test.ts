@@ -138,7 +138,7 @@ describe('nearestThreshold', () => {
 })
 
 function student(score: number): Student {
-  return { nickname: `nick${score}`, name: `Student ${score}`, score }
+  return { nickname: `nick${score}`, score }
 }
 
 describe('gradeHistogram', () => {

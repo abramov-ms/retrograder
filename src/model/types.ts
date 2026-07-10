@@ -23,6 +23,5 @@ export const SCALE_LENGTH = MAX_GRADE - MIN_GRADE
 
 export interface Student {
   nickname: string
-  name: string
   score: number
 }
