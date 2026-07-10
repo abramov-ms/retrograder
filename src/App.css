@@ -356,8 +356,30 @@
 .task-list-header {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
   gap: 24px;
+}
+
+.undo-redo {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  padding-top: 4px;
+}
+
+.undo-redo button {
+  padding: 4px 12px;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+button:disabled:hover {
+  border-color: var(--border);
+  color: inherit;
 }
 
 .score-panel {

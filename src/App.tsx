@@ -6,6 +6,7 @@ import { ScaleEditor } from './components/ScaleEditor'
 import { TaskList } from './components/TaskList'
 import { defaultGroups, defaultScale, defaultStudents, migratedDefaultGroups, normalizeScale } from './state/defaults'
 import { useLocalStorageState } from './state/useLocalStorageState'
+import { useUndoable } from './state/useUndoable'
 import type { GradingScale, Student, TaskGroup } from './model/types'
 import './App.css'
 
@@ -34,6 +35,7 @@ export default function App() {
     migratedDefaultGroups(),
     sharedState?.groups,
   )
+  const groupsHistory = useUndoable(groups, setGroups)
   const [storedScale, setScale] = useLocalStorageState<GradingScale>(
     'retrograder.scale',
     defaultScale,
@@ -53,7 +55,7 @@ export default function App() {
 
   const reset = () => {
     if (!window.confirm('Reset tasks, the grading scale, and imported students to the defaults?')) return
-    setGroups(defaultGroups)
+    groupsHistory.commit(defaultGroups) // undoable
     setScale(defaultScale)
     setStudents([]) // falls back to the bundled cohort
   }
@@ -106,7 +108,7 @@ export default function App() {
       <div className="split-view">
         <div className="split-left">
           {mode === 'what-if' ? (
-            <TaskList groups={groups} onChange={setGroups} scale={effectiveScale} />
+            <TaskList groups={groups} history={groupsHistory} scale={effectiveScale} />
           ) : (
             <RetroView students={students} onStudentsChange={setStudents} scale={effectiveScale} score={score} />
           )}

@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { DndContext, PointerSensor, closestCenter, pointerWithin, useSensor, useSensors } from '@dnd-kit/core'
 import type { CollisionDetection, DragEndEvent, DragOverEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
@@ -5,24 +6,27 @@ import { CSS } from '@dnd-kit/utilities'
 import { allTasks, maxScore, totalScore } from '../model/grading'
 import { newTaskId } from '../state/defaults'
 import { ScorePanel } from './ScorePanel'
+import type { Undoable } from '../state/useUndoable'
 import type { GradingScale, Task, TaskGroup } from '../model/types'
 
 interface Props {
   groups: TaskGroup[]
-  onChange: (groups: TaskGroup[]) => void
+  history: Undoable<TaskGroup[]>
   scale: GradingScale
 }
 
 interface SortableTaskProps {
   group: TaskGroup
   task: Task
-  onUpdate: (group: TaskGroup, taskId: string, patch: Partial<Task>) => void
+  // `commit` is false for keystrokes (blur records the checkpoint instead).
+  onUpdate: (group: TaskGroup, taskId: string, patch: Partial<Task>, commit: boolean) => void
   onRemove: (group: TaskGroup, taskId: string) => void
+  onBlur: () => void
 }
 
-// A task row with a hover-revealed drag handle; only the handle starts drags,
-// so the inputs and the checkbox keep working normally.
-function SortableTask({ group, task, onUpdate, onRemove }: SortableTaskProps) {
+// A task row with a drag handle; only the handle starts drags, so the inputs
+// and the checkbox keep working normally.
+function SortableTask({ group, task, onUpdate, onRemove, onBlur }: SortableTaskProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
     data: { type: 'task' },
@@ -40,20 +44,22 @@ function SortableTask({ group, task, onUpdate, onRemove }: SortableTaskProps) {
       <input
         type="checkbox"
         checked={task.solved}
-        onChange={(e) => onUpdate(group, task.id, { solved: e.target.checked })}
+        onChange={(e) => onUpdate(group, task.id, { solved: e.target.checked }, true)}
       />
       <input
         type="text"
         className="task-name"
         value={task.name}
-        onChange={(e) => onUpdate(group, task.id, { name: e.target.value })}
+        onChange={(e) => onUpdate(group, task.id, { name: e.target.value }, false)}
+        onBlur={onBlur}
       />
       <input
         type="number"
         className="task-points"
         min={0}
         value={task.points}
-        onChange={(e) => onUpdate(group, task.id, { points: Number(e.target.value) })}
+        onChange={(e) => onUpdate(group, task.id, { points: Number(e.target.value) }, false)}
+        onBlur={onBlur}
       />
       <button className="icon-button" title="Remove task" aria-label="Remove task" onClick={() => onRemove(group, task.id)} />
     </div>
@@ -65,10 +71,11 @@ interface SortableGroupProps {
   children: React.ReactNode
   onRename: (groupId: string, name: string) => void
   onRemove: (groupId: string) => void
+  onBlur: () => void
   actions: React.ReactNode
 }
 
-function SortableGroup({ group, children, onRename, onRemove, actions }: SortableGroupProps) {
+function SortableGroup({ group, children, onRename, onRemove, onBlur, actions }: SortableGroupProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: group.id,
     data: { type: 'group' },
@@ -89,6 +96,7 @@ function SortableGroup({ group, children, onRename, onRemove, actions }: Sortabl
           className="task-group-name"
           value={group.name}
           onChange={(e) => onRename(group.id, e.target.value)}
+          onBlur={onBlur}
         />
         <button className="icon-button" title="Remove group" aria-label="Remove group" onClick={() => onRemove(group.id)} />
       </div>
@@ -121,17 +129,42 @@ const collisionStrategy: CollisionDetection = (args) => {
   })
 }
 
-export function TaskList({ groups, onChange, scale }: Props) {
+export function TaskList({ groups, history, scale }: Props) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }))
 
-  const updateGroup = (groupId: string, patch: Partial<TaskGroup>) => {
-    onChange(groups.map((group) => (group.id === groupId ? { ...group, ...patch } : group)))
+  // Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z (or +Y). Inside an input the browser's
+  // own per-field undo applies instead, so the shortcut is left alone there.
+  const { undo, redo } = history
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey)) return
+      const key = e.key.toLowerCase()
+      if (key !== 'z' && key !== 'y') return
+      const target = e.target as HTMLElement
+      if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) return
+      e.preventDefault()
+      if (key === 'y' || e.shiftKey) redo()
+      else undo()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [undo, redo])
+
+  const apply = (next: TaskGroup[], commit: boolean) => (commit ? history.commit(next) : history.preview(next))
+
+  const updateGroup = (groupId: string, patch: Partial<TaskGroup>, commit = true) => {
+    apply(
+      groups.map((group) => (group.id === groupId ? { ...group, ...patch } : group)),
+      commit,
+    )
   }
 
-  const updateTask = (group: TaskGroup, taskId: string, patch: Partial<Task>) => {
-    updateGroup(group.id, {
-      tasks: group.tasks.map((task) => (task.id === taskId ? { ...task, ...patch } : task)),
-    })
+  const updateTask = (group: TaskGroup, taskId: string, patch: Partial<Task>, commit = true) => {
+    updateGroup(
+      group.id,
+      { tasks: group.tasks.map((task) => (task.id === taskId ? { ...task, ...patch } : task)) },
+      commit,
+    )
   }
 
   const addTask = (group: TaskGroup) => {
@@ -145,15 +178,15 @@ export function TaskList({ groups, onChange, scale }: Props) {
   }
 
   const addGroup = () => {
-    onChange([...groups, { id: newTaskId(), name: `Group ${groups.length + 1}`, tasks: [] }])
+    history.commit([...groups, { id: newTaskId(), name: `Group ${groups.length + 1}`, tasks: [] }])
   }
 
   const removeGroup = (groupId: string) => {
-    onChange(groups.filter((group) => group.id !== groupId))
+    history.commit(groups.filter((group) => group.id !== groupId))
   }
 
   const setAllSolved = (solved: boolean) => {
-    onChange(groups.map((group) => ({ ...group, tasks: group.tasks.map((task) => ({ ...task, solved })) })))
+    history.commit(groups.map((group) => ({ ...group, tasks: group.tasks.map((task) => ({ ...task, solved })) })))
   }
 
   const setGroupSolved = (group: TaskGroup, solved: boolean) => {
@@ -163,8 +196,7 @@ export function TaskList({ groups, onChange, scale }: Props) {
   const groupIndexOfTask = (taskId: string) => groups.findIndex((g) => g.tasks.some((t) => t.id === taskId))
 
   // While a task is dragged over another group, move it there so dnd-kit can
-  // sort it among that group's rows; final in-group ordering lands in
-  // handleDragEnd. The standard dnd-kit multi-container pattern.
+  // sort it among that group's rows. These are previews; the drop commits.
   const handleDragOver = ({ active, over }: DragOverEvent) => {
     if (!over || active.data.current?.type !== 'task') return
     const from = groupIndexOfTask(String(active.id))
@@ -175,7 +207,7 @@ export function TaskList({ groups, onChange, scale }: Props) {
     const insertAt = overIsGroup
       ? groups[to].tasks.length
       : groups[to].tasks.findIndex((t) => t.id === over.id)
-    onChange(
+    history.preview(
       groups.map((group, i) => {
         if (i === from) return { ...group, tasks: group.tasks.filter((t) => t.id !== active.id) }
         if (i === to) {
@@ -188,24 +220,24 @@ export function TaskList({ groups, onChange, scale }: Props) {
     )
   }
 
-  const handleDragEnd = ({ active, over }: DragEndEvent) => {
-    if (!over || active.id === over.id) return
+  // The final order for a drop; `groups` already carries the drag-over
+  // previews, so "unchanged" still commits any cross-group move.
+  const dropResult = ({ active, over }: DragEndEvent): TaskGroup[] => {
+    if (!over || active.id === over.id) return groups
     if (active.data.current?.type === 'group') {
       const oldIndex = groups.findIndex((g) => g.id === active.id)
       const overGroupId =
         over.data.current?.type === 'group' ? over.id : groups[groupIndexOfTask(String(over.id))]?.id
       const newIndex = groups.findIndex((g) => g.id === overGroupId)
-      if (oldIndex >= 0 && newIndex >= 0 && oldIndex !== newIndex) onChange(arrayMove(groups, oldIndex, newIndex))
-      return
+      return oldIndex >= 0 && newIndex >= 0 && oldIndex !== newIndex ? arrayMove(groups, oldIndex, newIndex) : groups
     }
     const groupIndex = groupIndexOfTask(String(active.id))
-    if (groupIndex < 0) return
+    if (groupIndex < 0) return groups
     const tasks = groups[groupIndex].tasks
     const oldIndex = tasks.findIndex((t) => t.id === active.id)
     const newIndex = tasks.findIndex((t) => t.id === over.id)
-    if (newIndex >= 0 && oldIndex !== newIndex) {
-      onChange(groups.map((g, i) => (i === groupIndex ? { ...g, tasks: arrayMove(tasks, oldIndex, newIndex) } : g)))
-    }
+    if (newIndex < 0 || oldIndex === newIndex) return groups
+    return groups.map((g, i) => (i === groupIndex ? { ...g, tasks: arrayMove(tasks, oldIndex, newIndex) } : g))
   }
 
   const tasks = allTasks(groups)
@@ -217,21 +249,31 @@ export function TaskList({ groups, onChange, scale }: Props) {
           <h2>Tasks</h2>
           <p className="hint">Check the tasks a student solved; every task counts its full points. Groups don't affect grading.</p>
         </div>
+        <div className="undo-redo">
+          <button onClick={history.undo} disabled={!history.canUndo} title="Undo (Ctrl+Z)" aria-label="Undo">
+            ↩
+          </button>
+          <button onClick={history.redo} disabled={!history.canRedo} title="Redo (Ctrl+Shift+Z)" aria-label="Redo">
+            ↪
+          </button>
+        </div>
         <ScorePanel tasks={tasks} scale={scale} />
       </div>
       <DndContext
         sensors={sensors}
         collisionDetection={collisionStrategy}
         onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
+        onDragEnd={(event) => history.commit(dropResult(event))}
+        onDragCancel={history.cancelPreview}
       >
         <SortableContext items={groups.map((g) => g.id)} strategy={verticalListSortingStrategy}>
           {groups.map((group) => (
             <SortableGroup
               key={group.id}
               group={group}
-              onRename={(id, name) => updateGroup(id, { name })}
+              onRename={(id, name) => updateGroup(id, { name }, false)}
               onRemove={removeGroup}
+              onBlur={history.commitPending}
               actions={
                 <div className="task-actions">
                   <button onClick={() => addTask(group)}>+ Add task</button>
@@ -246,7 +288,14 @@ export function TaskList({ groups, onChange, scale }: Props) {
               <div className="task-list">
                 <SortableContext items={group.tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
                   {group.tasks.map((task) => (
-                    <SortableTask key={task.id} group={group} task={task} onUpdate={updateTask} onRemove={removeTask} />
+                    <SortableTask
+                      key={task.id}
+                      group={group}
+                      task={task}
+                      onUpdate={updateTask}
+                      onRemove={removeTask}
+                      onBlur={history.commitPending}
+                    />
                   ))}
                 </SortableContext>
               </div>
