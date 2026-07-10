@@ -300,7 +300,8 @@
   font-size: 34px;
   font-weight: 700;
   line-height: 1.1;
-  color: var(--accent);
+  /* The supposed student's color, like the scale arrow and the ECDF line. */
+  color: var(--marker);
 }
 
 .score-label {
