@@ -65,6 +65,17 @@ nudge a focused knob by 1 (Shift: 5).
    editor. Shows how a candidate scale *would have played out* on last year's
    cohort; charts re-render live as thresholds are edited.
 
+## Sharing
+
+The app stays backend-less: the Share button in the header encodes the task
+groups + grading scale into a compact versioned payload (`src/model/share.ts`,
+lz-string `compressToEncodedURIComponent`) and copies a URL with it as the
+`?s=` query parameter. On load, a valid `?s=` overrides the visitor's stored
+groups/scale (then persists as usual) and is stripped from the URL via
+`history.replaceState`. Students are *not* shared — the bundled cohort is the
+same for everyone. Task/group ids are regenerated on decode; invalid payloads
+fall back silently to stored/default state.
+
 ## Stack
 
 - **Vite + React 19 + TypeScript** — standard client-only SPA setup.

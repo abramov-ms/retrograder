@@ -39,6 +39,12 @@
   color: #fff;
 }
 
+.share-button {
+  margin-left: auto;
+  padding: 6px 22px;
+  border-radius: 22px;
+}
+
 .split-view {
   display: grid;
   grid-template-columns: 1fr 380px;

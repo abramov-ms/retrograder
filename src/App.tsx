@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { allTasks, clampScale, maxScore, totalScore } from './model/grading'
+import { encodeShareState, decodeShareState } from './model/share'
 import { RetroView } from './components/RetroView'
 import { ScaleEditor } from './components/ScaleEditor'
 import { TaskList } from './components/TaskList'
@@ -9,10 +11,34 @@ import './App.css'
 
 type Mode = 'what-if' | 'retro'
 
+// State arriving in a share link: read (and strip from the URL) once per page
+// load, at module scope so React StrictMode's double-rendering can't lose it.
+function readSharedState() {
+  if (typeof window === 'undefined') return null
+  const params = new URLSearchParams(window.location.search)
+  const encoded = params.get('s')
+  if (!encoded) return null
+  const state = decodeShareState(encoded)
+  params.delete('s')
+  const query = params.toString()
+  history.replaceState(null, '', window.location.pathname + (query ? `?${query}` : ''))
+  return state
+}
+
+const sharedState = readSharedState()
+
 export default function App() {
   const [mode, setMode] = useLocalStorageState<Mode>('retrograder.mode', 'what-if')
-  const [groups, setGroups] = useLocalStorageState<TaskGroup[]>('retrograder.groups', migratedDefaultGroups())
-  const [storedScale, setScale] = useLocalStorageState<GradingScale>('retrograder.scale', defaultScale)
+  const [groups, setGroups] = useLocalStorageState<TaskGroup[]>(
+    'retrograder.groups',
+    migratedDefaultGroups(),
+    sharedState?.groups,
+  )
+  const [storedScale, setScale] = useLocalStorageState<GradingScale>(
+    'retrograder.scale',
+    defaultScale,
+    sharedState?.scale,
+  )
   const scale = normalizeScale(storedScale)
   const [importedStudents, setStudents] = useLocalStorageState<Student[]>('retrograder.students', [])
   // Until the user imports a file, retro mode shows the bundled results of
@@ -23,6 +49,22 @@ export default function App() {
   // at the total. Dragging any knob persists the clamped values.
   const maxPoints = maxScore(allTasks(groups))
   const effectiveScale = clampScale(scale, maxPoints)
+
+  const [copied, setCopied] = useState(false)
+  const share = async () => {
+    const url = `${window.location.origin}${window.location.pathname}?s=${encodeShareState({
+      groups,
+      scale: effectiveScale,
+    })}`
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // No clipboard access (e.g. plain-http host): let the user copy manually.
+      window.prompt('Copy the link:', url)
+    }
+  }
 
   return (
     <div className="app">
@@ -36,6 +78,9 @@ export default function App() {
             Retro
           </button>
         </nav>
+        <button className="share-button" onClick={share}>
+          {copied ? 'Link copied!' : 'Share'}
+        </button>
       </header>
       <div className="split-view">
         <div className="split-left">
