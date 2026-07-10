@@ -66,9 +66,7 @@ export function TaskList({ groups, onChange, scale }: Props) {
               value={group.name}
               onChange={(e) => updateGroup(group.id, { name: e.target.value })}
             />
-            <button className="icon-button" title="Remove group" onClick={() => removeGroup(group.id)}>
-              ✕
-            </button>
+            <button className="icon-button" title="Remove group" aria-label="Remove group" onClick={() => removeGroup(group.id)} />
           </div>
           <div className="task-list">
             {group.tasks.map((task) => (
@@ -91,9 +89,7 @@ export function TaskList({ groups, onChange, scale }: Props) {
                   value={task.points}
                   onChange={(e) => updateTask(group, task.id, { points: Number(e.target.value) })}
                 />
-                <button className="icon-button" title="Remove task" onClick={() => removeTask(group, task.id)}>
-                  ✕
-                </button>
+                <button className="icon-button" title="Remove task" aria-label="Remove task" onClick={() => removeTask(group, task.id)} />
               </div>
             ))}
           </div>

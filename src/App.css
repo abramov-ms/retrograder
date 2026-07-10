@@ -200,15 +200,39 @@
   width: 72px;
 }
 
+/* Remove buttons: a real cross drawn from two rotated bars. */
 .icon-button {
-  padding: 4px 8px;
+  position: relative;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  padding: 0;
   border-color: transparent;
   background: none;
   opacity: 0.5;
 }
 
+.icon-button::before,
+.icon-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.icon-button::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
 .icon-button:hover {
   opacity: 1;
+  color: var(--danger);
+  border-color: var(--danger);
 }
 
 .task-actions {

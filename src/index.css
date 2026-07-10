@@ -16,6 +16,7 @@
   --unsolved-bg: rgba(168, 168, 168, 0.18);
   --green: #4caf50;
   --warning: #ef6c00;
+  --danger: #dc3545;
 
   --mono: 'Source Code Pro', ui-monospace, Consolas, monospace;
 
@@ -40,6 +41,7 @@
     --unsolved-bg: rgba(168, 168, 168, 0.12);
     --green: #66bb6a;
     --warning: #ffa726;
+    --danger: #ef5b6a;
   }
 }
 
