@@ -70,9 +70,9 @@ export default function App() {
   const effectiveScale = clampScale(scale, maxPoints)
   const score = totalScore(allTasks(groups))
 
+  // No confirmation: the tasks/scale part is one undoable history entry.
   const reset = () => {
-    if (!window.confirm('Reset tasks, the grading scale, and imported students to the defaults?')) return
-    history.commit({ groups: defaultGroups, scale: defaultScale }) // undoable
+    history.commit({ groups: defaultGroups, scale: defaultScale })
     setStudents([]) // falls back to the bundled cohort
   }
 
