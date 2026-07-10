@@ -1,6 +1,7 @@
 import { allTasks, clampScale, maxScore } from './model/grading'
 import { RetroView } from './components/RetroView'
-import { WhatIfView } from './components/WhatIfView'
+import { ScaleEditor } from './components/ScaleEditor'
+import { TaskList } from './components/TaskList'
 import { defaultScale, defaultStudents, migratedDefaultGroups, normalizeScale } from './state/defaults'
 import { useLocalStorageState } from './state/useLocalStorageState'
 import type { GradingScale, Student, TaskGroup } from './model/types'
@@ -36,17 +37,20 @@ export default function App() {
           </button>
         </nav>
       </header>
-      {mode === 'what-if' ? (
-        <WhatIfView groups={groups} onGroupsChange={setGroups} scale={effectiveScale} onScaleChange={setScale} />
-      ) : (
-        <RetroView
-          students={students}
-          onStudentsChange={setStudents}
-          scale={effectiveScale}
-          onScaleChange={setScale}
-          maxPoints={maxPoints}
-        />
-      )}
+      <div className="split-view">
+        <div className="split-left">
+          {mode === 'what-if' ? (
+            <TaskList groups={groups} onChange={setGroups} scale={effectiveScale} />
+          ) : (
+            <RetroView students={students} onStudentsChange={setStudents} scale={effectiveScale} />
+          )}
+        </div>
+        <div className="split-right">
+          {/* One persistent editor for both modes: remounting it on tab
+              switches makes the labels flicker while the track re-measures. */}
+          <ScaleEditor scale={effectiveScale} onChange={setScale} maxPoints={maxPoints} />
+        </div>
+      </div>
     </div>
   )
 }

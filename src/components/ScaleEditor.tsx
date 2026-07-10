@@ -19,12 +19,16 @@ export function ScaleEditor({ scale, onChange, maxPoints }: Props) {
   const sliderMax = Math.max(10, maxPoints)
 
   // The track fills the panel's free height, so measure it for the label
-  // collision math below.
+  // collision math below. The synchronous measure in the layout effect runs
+  // before the browser paints, so the first frame already uses the real
+  // height; the observer keeps it current on window resizes.
   const [trackHeight, setTrackHeight] = useState(480)
   useLayoutEffect(() => {
     const track = trackRef.current
     if (!track) return
-    const observer = new ResizeObserver(() => setTrackHeight(track.getBoundingClientRect().height))
+    const measure = () => setTrackHeight(track.getBoundingClientRect().height)
+    measure()
+    const observer = new ResizeObserver(measure)
     observer.observe(track)
     return () => observer.disconnect()
   }, [])
