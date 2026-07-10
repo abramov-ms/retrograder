@@ -185,6 +185,9 @@
 .task-row.solved input[type='number'] {
   background: rgba(255, 255, 255, 0.45);
   color: #08060d;
+  /* Native widgets (number spinners) must render light on the green row,
+     even when the page-level color-scheme is dark. */
+  color-scheme: light;
 }
 
 .task-row.solved .icon-button {

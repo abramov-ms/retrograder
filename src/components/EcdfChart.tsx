@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { tooltipContentStyle, tooltipItemStyle, tooltipLabelStyle } from './chartTheme'
 import { ecdfPoints } from '../model/grading'
 import { MIN_GRADE } from '../model/types'
 import type { GradingScale, Student } from '../model/types'
@@ -38,6 +39,10 @@ export function EcdfChart({ students, scale }: Props) {
           <Tooltip
             formatter={(fraction) => [`${(Number(fraction) * 100).toFixed(1)}%`, 'of students ≤']}
             labelFormatter={(score) => `Score ${score}`}
+            contentStyle={tooltipContentStyle}
+            labelStyle={tooltipLabelStyle}
+            itemStyle={tooltipItemStyle}
+            cursor={{ stroke: 'var(--border)' }}
           />
           {scale.map((threshold, index) => (
             <ReferenceLine

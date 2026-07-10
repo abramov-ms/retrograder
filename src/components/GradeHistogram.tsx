@@ -1,4 +1,5 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { tooltipContentStyle, tooltipItemStyle, tooltipLabelStyle } from './chartTheme'
 import { gradeHistogram } from '../model/grading'
 import type { GradingScale, Student } from '../model/types'
 
@@ -18,7 +19,14 @@ export function GradeHistogram({ students, scale }: Props) {
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="grade" />
           <YAxis allowDecimals={false} />
-          <Tooltip formatter={(count) => [count, 'students']} labelFormatter={(grade) => `Grade ${grade}`} />
+          <Tooltip
+            formatter={(count) => [count, 'students']}
+            labelFormatter={(grade) => `Grade ${grade}`}
+            contentStyle={tooltipContentStyle}
+            labelStyle={tooltipLabelStyle}
+            itemStyle={tooltipItemStyle}
+            cursor={{ fill: 'var(--accent-bg)' }}
+          />
           <Bar dataKey="count" fill="#66cda3" isAnimationActive={false} />
         </BarChart>
       </ResponsiveContainer>
