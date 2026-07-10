@@ -82,6 +82,11 @@ fall back silently to stored/default state.
 
 - **Vite + React 19 + TypeScript** — standard client-only SPA setup.
 - **Recharts** for the histogram and ECDF.
+- **dnd-kit** for reordering tasks/groups by their hover-revealed drag
+  handles (tasks also move between groups). It uses a custom collision
+  strategy in TaskList — pointer containment first, rows before group
+  boxes — because plain closestCenter can teleport a task into a
+  neighboring group near group edges.
 - **PapaParse** for CSV parsing (delimiter auto-detection, quoting).
 - **Vitest** for unit tests; **oxlint** for linting (template default).
 - Plain React state in `App` + a small `useLocalStorageState` hook. No state

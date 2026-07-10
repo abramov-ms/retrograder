@@ -191,6 +191,43 @@
   gap: 8px;
 }
 
+/* Drag handles at the left edge of a row/group header: always visible so
+   draggability is discoverable, grayed out until hovered. */
+.drag-handle {
+  flex: none;
+  width: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.25;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  font-size: 13px;
+  transition: opacity 0.15s ease;
+}
+
+.task-row:hover > .drag-handle,
+.task-group-header:hover > .drag-handle {
+  opacity: 0.5;
+}
+
+.task-row > .drag-handle:hover,
+.task-group-header > .drag-handle:hover {
+  opacity: 0.9;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.task-row.dragging,
+.task-group.dragging {
+  opacity: 0.5;
+  position: relative;
+  z-index: 5;
+}
+
 .task-row {
   display: flex;
   align-items: center;
