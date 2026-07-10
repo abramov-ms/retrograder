@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { allTasks, clampScale, maxScore, totalScore } from './model/grading'
 import { encodeShareState, decodeShareState } from './model/share'
 import { RetroView } from './components/RetroView'
@@ -7,6 +7,7 @@ import { TaskList } from './components/TaskList'
 import { defaultGroups, defaultScale, defaultStudents, migratedDefaultGroups, normalizeScale } from './state/defaults'
 import { useLocalStorageState } from './state/useLocalStorageState'
 import { useUndoable } from './state/useUndoable'
+import type { Undoable } from './state/useUndoable'
 import type { GradingScale, Student, TaskGroup } from './model/types'
 import './App.css'
 
@@ -35,13 +36,29 @@ export default function App() {
     migratedDefaultGroups(),
     sharedState?.groups,
   )
-  const groupsHistory = useUndoable(groups, setGroups)
   const [storedScale, setScale] = useLocalStorageState<GradingScale>(
     'retrograder.scale',
     defaultScale,
     sharedState?.scale,
   )
   const scale = normalizeScale(storedScale)
+
+  // One undo timeline over both editors: task-list actions and scale-knob
+  // drops interleave in the order they happened.
+  const setEditorState = useCallback(
+    (next: { groups: TaskGroup[]; scale: GradingScale }) => {
+      setGroups(next.groups)
+      setScale(next.scale)
+    },
+    [setGroups, setScale],
+  )
+  const history = useUndoable({ groups, scale }, setEditorState)
+  // The task list edits only its slice of the shared timeline.
+  const groupsHistory: Undoable<TaskGroup[]> = {
+    ...history,
+    preview: (next) => history.preview({ groups: next, scale }),
+    commit: (next) => history.commit({ groups: next, scale }),
+  }
   const [importedStudents, setStudents] = useLocalStorageState<Student[]>('retrograder.students', [])
   // Until the user imports a file, retro mode shows the bundled results of
   // the past year (also covers older sessions that persisted an empty list).
@@ -55,10 +72,27 @@ export default function App() {
 
   const reset = () => {
     if (!window.confirm('Reset tasks, the grading scale, and imported students to the defaults?')) return
-    groupsHistory.commit(defaultGroups) // undoable
-    setScale(defaultScale)
+    history.commit({ groups: defaultGroups, scale: defaultScale }) // undoable
     setStudents([]) // falls back to the bundled cohort
   }
+
+  // Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z (or +Y). Inside an input the browser's
+  // own per-field undo applies instead, so the shortcut is left alone there.
+  const { undo, redo } = history
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey)) return
+      const key = e.key.toLowerCase()
+      if (key !== 'z' && key !== 'y') return
+      const target = e.target as HTMLElement
+      if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) return
+      e.preventDefault()
+      if (key === 'y' || e.shiftKey) redo()
+      else undo()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [undo, redo])
 
   const [copied, setCopied] = useState(false)
   const share = async () => {
@@ -99,6 +133,12 @@ export default function App() {
           </button>
         </nav>
         <div className="header-actions">
+          <button onClick={history.undo} disabled={!history.canUndo} title="Undo (Ctrl+Z)" aria-label="Undo">
+            ↩
+          </button>
+          <button onClick={history.redo} disabled={!history.canRedo} title="Redo (Ctrl+Shift+Z)" aria-label="Redo">
+            ↪
+          </button>
           <button className="reset-button" onClick={reset}>
             Reset
           </button>
@@ -116,7 +156,13 @@ export default function App() {
         <div className="split-right">
           {/* One persistent editor for both modes: remounting it on tab
               switches makes the labels flicker while the track re-measures. */}
-          <ScaleEditor scale={effectiveScale} onChange={setScale} maxPoints={maxPoints} score={score} />
+          <ScaleEditor
+            scale={effectiveScale}
+            onChange={(next) => history.preview({ groups, scale: next })}
+            onCommit={history.commitPending}
+            maxPoints={maxPoints}
+            score={score}
+          />
         </div>
       </div>
       </div>

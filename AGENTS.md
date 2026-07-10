@@ -69,15 +69,16 @@ nudge a focused knob by 1 (Shift: 5).
 
 ## Undo/redo
 
-The task list has commit-boundary undo/redo (buttons in the Tasks header,
-Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z or +Y): pure stack logic in
-`src/model/history.ts`, React wiring in `src/state/useUndoable.ts`. Discrete
-actions (checkbox toggles, add/remove, solve/clear, reset, drops) commit one
-checkpoint each; keystrokes and drag-over moves are live previews that commit
-on input blur / drop, and a cancelled drag restores the checkpoint. While an
-input is focused, Ctrl+Z is left to the browser's native per-field undo — the
-global shortcut only applies outside inputs. The grading scale is out of
-scope by design.
+The task list and the grading scale share one commit-boundary undo timeline
+(buttons in the app header next to Reset, Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z or
++Y): pure stack logic in `src/model/history.ts`, React wiring in
+`src/state/useUndoable.ts`, combined `{groups, scale}` state in App. Discrete
+actions (checkbox toggles, add/remove, solve/clear, reset, drag drops) commit
+one checkpoint each; keystrokes, task drag-over moves, and scale-knob drags
+are live previews that commit on input blur / drop / knob release (keyboard
+nudges commit on key release), and a cancelled task drag restores the
+checkpoint. While an input is focused, Ctrl+Z is left to the browser's native
+per-field undo — the global shortcut only applies outside inputs.
 
 ## Sharing
 

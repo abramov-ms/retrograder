@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { DndContext, PointerSensor, closestCenter, pointerWithin, useSensor, useSensors } from '@dnd-kit/core'
 import type { CollisionDetection, DragEndEvent, DragOverEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
@@ -132,24 +131,6 @@ const collisionStrategy: CollisionDetection = (args) => {
 export function TaskList({ groups, history, scale }: Props) {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }))
 
-  // Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z (or +Y). Inside an input the browser's
-  // own per-field undo applies instead, so the shortcut is left alone there.
-  const { undo, redo } = history
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (!(e.ctrlKey || e.metaKey)) return
-      const key = e.key.toLowerCase()
-      if (key !== 'z' && key !== 'y') return
-      const target = e.target as HTMLElement
-      if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) return
-      e.preventDefault()
-      if (key === 'y' || e.shiftKey) redo()
-      else undo()
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [undo, redo])
-
   const apply = (next: TaskGroup[], commit: boolean) => (commit ? history.commit(next) : history.preview(next))
 
   const updateGroup = (groupId: string, patch: Partial<TaskGroup>, commit = true) => {
@@ -248,14 +229,6 @@ export function TaskList({ groups, history, scale }: Props) {
         <div>
           <h2>Tasks</h2>
           <p className="hint">Check the tasks a student solved; every task counts its full points. Groups don't affect grading.</p>
-        </div>
-        <div className="undo-redo">
-          <button onClick={history.undo} disabled={!history.canUndo} title="Undo (Ctrl+Z)" aria-label="Undo">
-            ↩
-          </button>
-          <button onClick={history.redo} disabled={!history.canRedo} title="Redo (Ctrl+Shift+Z)" aria-label="Redo">
-            ↪
-          </button>
         </div>
         <ScorePanel tasks={tasks} scale={scale} />
       </div>

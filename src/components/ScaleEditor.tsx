@@ -5,14 +5,17 @@ import type { GradingScale } from '../model/types'
 
 interface Props {
   scale: GradingScale
+  // Live update while a knob moves; onCommit marks the undo boundary when
+  // the knob is dropped (pointer up) or the arrow keys are released.
   onChange: (scale: GradingScale) => void
+  onCommit: () => void
   // Top end of the track: the course's total points (derived from the tasks).
   maxPoints: number
   // Current what-if total; shown as a marker on the track.
   score: number
 }
 
-export function ScaleEditor({ scale, onChange, maxPoints, score }: Props) {
+export function ScaleEditor({ scale, onChange, onCommit, maxPoints, score }: Props) {
   const trackRef = useRef<HTMLDivElement>(null)
   const knobRefs = useRef<(HTMLDivElement | null)[]>([])
   const draggingIndex = useRef<number | null>(null)
@@ -103,8 +106,14 @@ export function ScaleEditor({ scale, onChange, maxPoints, score }: Props) {
             onChange(moveThreshold(scale, draggingIndex.current, valueAtY(e.clientY), sliderMax))
           }
         }}
-        onPointerUp={() => (draggingIndex.current = null)}
-        onPointerCancel={() => (draggingIndex.current = null)}
+        onPointerUp={() => {
+          draggingIndex.current = null
+          onCommit()
+        }}
+        onPointerCancel={() => {
+          draggingIndex.current = null
+          onCommit()
+        }}
       >
         <div className="multi-slider-hitbox" />
         <div className="multi-slider-track" />
@@ -164,6 +173,9 @@ export function ScaleEditor({ scale, onChange, maxPoints, score }: Props) {
                 nudge(index, e.shiftKey ? 5 : 1)
               }
             }}
+            // Nudges are previews; releasing the key marks the undo boundary,
+            // so holding an arrow key is a single history entry.
+            onKeyUp={onCommit}
           >
             {MIN_GRADE + 1 + index}
             <span
