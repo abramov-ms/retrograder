@@ -49,6 +49,7 @@ export default function App() {
   // at the total. Dragging any knob persists the clamped values.
   const maxPoints = maxScore(allTasks(groups))
   const effectiveScale = clampScale(scale, maxPoints)
+  const score = totalScore(allTasks(groups))
 
   const [copied, setCopied] = useState(false)
   const share = async () => {
@@ -87,18 +88,13 @@ export default function App() {
           {mode === 'what-if' ? (
             <TaskList groups={groups} onChange={setGroups} scale={effectiveScale} />
           ) : (
-            <RetroView students={students} onStudentsChange={setStudents} scale={effectiveScale} />
+            <RetroView students={students} onStudentsChange={setStudents} scale={effectiveScale} score={score} />
           )}
         </div>
         <div className="split-right">
           {/* One persistent editor for both modes: remounting it on tab
               switches makes the labels flicker while the track re-measures. */}
-          <ScaleEditor
-            scale={effectiveScale}
-            onChange={setScale}
-            maxPoints={maxPoints}
-            score={totalScore(allTasks(groups))}
-          />
+          <ScaleEditor scale={effectiveScale} onChange={setScale} maxPoints={maxPoints} score={score} />
         </div>
       </div>
     </div>

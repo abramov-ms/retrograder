@@ -16,14 +16,17 @@ import type { GradingScale, Student } from '../model/types'
 interface Props {
   students: Student[]
   scale: GradingScale
+  // Current what-if total: drawn as a vertical marker so the supposed
+  // student can be compared against the cohort.
+  score: number
 }
 
-export function EcdfChart({ students, scale }: Props) {
+export function EcdfChart({ students, scale, score }: Props) {
   const points = ecdfPoints(students)
   if (points.length === 0) return null
 
   const minScore = Math.min(points[0].score, 0, ...scale)
-  const maxScore = Math.max(points[points.length - 1].score, ...scale)
+  const maxScore = Math.max(points[points.length - 1].score, ...scale, score)
   // The ECDF is 0 before the lowest score; anchor the step line there.
   const data = [{ score: minScore, fraction: 0 }, ...points]
 
@@ -53,6 +56,12 @@ export function EcdfChart({ students, scale }: Props) {
               label={{ value: String(MIN_GRADE + 1 + index), position: 'top', fill: '#f0ad4e', fontSize: 12 }}
             />
           ))}
+          <ReferenceLine
+            x={score}
+            stroke="#4caf50"
+            strokeWidth={2}
+            label={{ value: 'me', position: 'top', fill: '#4caf50', fontSize: 12 }}
+          />
           <Line type="stepAfter" dataKey="fraction" stroke="#17c3b2" dot={false} strokeWidth={2} isAnimationActive={false} />
         </LineChart>
       </ResponsiveContainer>
