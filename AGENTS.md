@@ -132,7 +132,9 @@ fall back silently to stored/default state.
 - The design mimics **Manytask** (github.com/manytask/manytask), the course's
   actual grading system: Source Code Pro (self-hosted via @fontsource)
   monospace everywhere, green-first palette — green `#4caf50` as the accent
-  (tabs, knobs, scores, checkboxes, ECDF curve), `#66cda3` for solved tasks /
+  (tabs, scores, checkboxes, ECDF curve), scale knobs banded by grade
+  quality (`--grade-okay` orange 3–4, `--grade-good` yellow 5–7,
+  `--grade-excellent` green 8–10, dark text on all), `#66cda3` for solved tasks /
   histogram bars (black text on green), teal `#17c3b2` (`--marker`) reserved
   for the current-student markers (scale arrow, ECDF "me" line), gray
   `#a8a8a8`-tinted rows for unsolved, orange `#f0ad4e` for threshold

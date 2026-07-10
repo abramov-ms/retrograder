@@ -525,6 +525,22 @@ button:disabled:hover {
   cursor: default;
 }
 
+/* Grade quality bands. */
+.knob-okay {
+  background: var(--grade-okay);
+  color: #08060d;
+}
+
+.knob-good {
+  background: var(--grade-good);
+  color: #08060d;
+}
+
+.knob-excellent {
+  background: var(--grade-excellent);
+  color: #08060d;
+}
+
 .slider-value {
   position: absolute;
   left: 34px;

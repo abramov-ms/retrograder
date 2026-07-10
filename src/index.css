@@ -18,6 +18,10 @@
   --marker: #17c3b2;
   --warning: #ef6c00;
   --danger: #dc3545;
+  /* Scale knob bands: 3-4 okay, 5-7 good, 8-10 excellent (dark text on all). */
+  --grade-okay: #f0ad4e;
+  --grade-good: #f0d24e;
+  --grade-excellent: #66cda3;
 
   --mono: 'Source Code Pro', ui-monospace, Consolas, monospace;
 
@@ -43,6 +47,9 @@
     --marker: #1fd4c2;
     --warning: #ffa726;
     --danger: #ef5b6a;
+    --grade-okay: #f5b45c;
+    --grade-good: #f2d550;
+    --grade-excellent: #6fd6ac;
   }
 }
 
