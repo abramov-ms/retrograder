@@ -1,0 +1,90 @@
+# Course tasks (converted from scores.csv).
+# Groups are in course order; the UI shows them newest-first.
+- name: 01-data-representation
+  tasks:
+    - name: ieee754-clf
+      score: 50
+    - name: bloom-filter
+      score: 100
+    - name: utf8-file
+      score: 100
+- name: 01-data-representation-bonus
+  tasks:
+    - name: float-mul
+      score: 75
+    - name: float-next-prev
+      score: 50
+    - name: float-add
+      score: 75
+    - name: float-div
+      score: 75
+    - name: float-string
+      score: 125
+- name: 02-files
+  tasks:
+    - name: fs-utils
+      score: 100
+    - name: persistent-storage
+      score: 125
+    - name: same-file
+      score: 50
+    - name: tailf
+      score: 75
+    - name: linked-list
+      score: 50
+- name: 03-asm-1
+  tasks:
+    - name: asm-add
+      score: 50
+    - name: asm-add-scanf
+      score: 100
+    - name: asm-memcpy
+      score: 100
+    - name: asm-scalar-product
+      score: 200
+- name: 04-asm-2
+  tasks:
+    - name: asm-add-AArch64
+      score: 50
+    - name: asm-add-scanf-AArch64
+      score: 100
+    - name: asm-1d-dp
+      score: 150
+- name: 04-asm-2-bonus
+  tasks:
+    - name: we-have-compiler-at-home
+      score: 200
+- name: 05-memory
+  tasks:
+    - name: linked-list-2
+      score: 50
+    - name: file-allocator
+      score: 100
+    - name: minigrep
+      score: 100
+- name: 06-processes
+  tasks:
+    - name: proc-chain
+      score: 100
+    - name: proc-lca
+      score: 75
+    - name: lockfree-stack
+      score: 75
+    - name: userspace-signalfd
+      score: 75
+- name: 07-synchronization-basics
+  tasks:
+    - name: integral
+      score: 100
+- name: 08-interprocess-communication
+  tasks:
+    - name: file-watcher
+      score: 100
+- name: 09-networks
+  tasks:
+    - name: kv-server
+      score: 150
+- name: 15-bonus
+  tasks:
+    - name: broken-echo
+      score: 50

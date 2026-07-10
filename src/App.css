@@ -1,0 +1,390 @@
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.app-header h1 {
+  font-size: 24px;
+  margin: 0;
+  color: var(--accent);
+}
+
+.mode-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab {
+  padding: 6px 22px;
+  border-radius: 22px;
+}
+
+.tab-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.tab-active:hover {
+  color: #fff;
+}
+
+.split-view {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .split-view {
+    grid-template-columns: 1fr;
+  }
+}
+
+.split-left,
+.split-right {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* On wide screens the right column is pinned to the viewport and the scale
+   panel stretches, so the track gets all the available vertical space. */
+@media (min-width: 801px) {
+  .split-right {
+    position: sticky;
+    top: 24px;
+    height: calc(100vh - 48px);
+  }
+
+  .scale-panel {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.scale-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 20px 24px;
+}
+
+.panel h2 {
+  font-size: 17px;
+  margin: 0 0 4px;
+}
+
+.hint {
+  font-size: 13px;
+  margin: 0 0 12px;
+  opacity: 0.75;
+}
+
+.warning {
+  color: var(--warning);
+  font-size: 13px;
+  margin: 12px 0 0;
+}
+
+/* Task list: groups are bordered blocks like manytask lectures, task rows
+   are gray when unsolved and green when solved like manytask task cards. */
+
+.task-group {
+  border: 1px solid var(--text);
+  border-radius: 4px;
+  padding: 10px 16px 16px;
+  margin-bottom: 20px;
+}
+
+.task-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.task-group-name {
+  font-weight: 700;
+  color: var(--text-h);
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border-color: transparent;
+}
+
+.task-group-name:hover,
+.task-group-name:focus {
+  border-color: var(--border);
+  background: var(--bg);
+}
+
+.task-group-header .hint {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 10px;
+  background: var(--unsolved-bg);
+  transition: background 0.3s ease;
+}
+
+.task-row input[type='text'],
+.task-row input[type='number'] {
+  background: var(--panel-bg);
+  border-color: transparent;
+}
+
+.task-row input[type='text']:hover,
+.task-row input[type='number']:hover {
+  border-color: var(--border);
+}
+
+.task-row.solved {
+  background: var(--solved);
+}
+
+.task-row.solved:hover {
+  background: var(--solved-hover);
+}
+
+.task-row.solved input[type='text'],
+.task-row.solved input[type='number'] {
+  background: rgba(255, 255, 255, 0.45);
+  color: #08060d;
+}
+
+.task-row.solved .icon-button {
+  color: #08060d;
+}
+
+.task-row input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+}
+
+.task-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-points {
+  width: 72px;
+}
+
+.icon-button {
+  padding: 4px 8px;
+  border-color: transparent;
+  background: none;
+  opacity: 0.5;
+}
+
+.icon-button:hover {
+  opacity: 1;
+}
+
+.add-task {
+  margin-top: 8px;
+  font-size: 13px;
+  border-color: transparent;
+  opacity: 0.7;
+}
+
+.add-task:hover {
+  opacity: 1;
+}
+
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-actions .hint {
+  margin: 0 0 0 auto;
+}
+
+/* Score display in the task list header */
+
+.task-list-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.score-panel {
+  display: flex;
+  gap: 28px;
+  padding: 0 8px;
+}
+
+.score-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.score-value {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--accent);
+}
+
+.score-label {
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+/* Scale editor */
+
+.slider-end {
+  width: 26px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.6;
+  margin-left: 13px;
+}
+
+.multi-slider {
+  position: relative;
+  flex: 1;
+  height: 480px; /* fallback when the panel doesn't stretch (narrow screens) */
+  min-height: 200px;
+  margin: 13px 0 13px 13px;
+  width: 26px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@media (min-width: 801px) {
+  .multi-slider {
+    height: auto;
+  }
+}
+
+/* Invisible drag surface widening the track's hit area (covers the value
+   labels too); pointer events bubble from it to .multi-slider. */
+.multi-slider-hitbox {
+  position: absolute;
+  top: -13px;
+  bottom: -13px;
+  left: -20px;
+  right: -110px;
+}
+
+.multi-slider-track {
+  position: absolute;
+  left: 10px;
+  top: -13px;
+  bottom: -13px;
+  width: 6px;
+  border-radius: 3px;
+  background: var(--unsolved-bg);
+  border: 1px solid var(--border);
+}
+
+.slider-knob {
+  position: absolute;
+  left: 13px;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--panel-bg);
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.slider-knob:focus-visible {
+  outline: 2px solid var(--text-h);
+  outline-offset: 2px;
+}
+
+.slider-knob-fixed {
+  background: #a8a8a8;
+  color: #08060d;
+  cursor: default;
+}
+
+.slider-value {
+  position: absolute;
+  left: 34px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text);
+}
+
+/* CSV import */
+
+.dropzone {
+  border: 2px dashed var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.dropzone-active {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.dropzone .hint {
+  margin: 8px 0 0;
+}
+
+.link-button {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+details.warning ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}

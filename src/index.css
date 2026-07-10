@@ -1,0 +1,87 @@
+/* Design mimics Manytask (github.com/manytask/manytask), the course's actual
+   grading system: Source Code Pro everywhere, green-ish palette
+   (brand teal #17c3b2, solved-green #66cda3, unsolved-gray #a8a8a8),
+   large border radii on interactive elements. */
+
+:root {
+  --text: #343a40;
+  --text-h: #212529;
+  --bg: #f8f9fa;
+  --panel-bg: #fff;
+  --border: #dee2e6;
+  --accent: #17c3b2;
+  --accent-bg: rgba(23, 195, 178, 0.12);
+  --solved: #66cda3;
+  --solved-hover: #76ddb3;
+  --unsolved-bg: rgba(168, 168, 168, 0.18);
+  --green: #4caf50;
+  --warning: #ef6c00;
+
+  --mono: 'Source Code Pro', ui-monospace, Consolas, monospace;
+
+  font: 15px/150% var(--mono);
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #adb5bd;
+    --text-h: #f8f9fa;
+    --bg: #1a1d20;
+    --panel-bg: #212529;
+    --border: #3a4046;
+    --accent: #1fd4c2;
+    --accent-bg: rgba(31, 212, 194, 0.15);
+    --unsolved-bg: rgba(168, 168, 168, 0.12);
+    --green: #66bb6a;
+    --warning: #ffa726;
+  }
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2 {
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+input,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+input[type='text'],
+input[type='number'] {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px 10px;
+}
+
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+button {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
