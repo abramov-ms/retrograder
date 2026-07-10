@@ -1,7 +1,8 @@
 /* Design mimics Manytask (github.com/manytask/manytask), the course's actual
-   grading system: Source Code Pro everywhere, green-ish palette
-   (brand teal #17c3b2, solved-green #66cda3, unsolved-gray #a8a8a8),
-   large border radii on interactive elements. */
+   grading system: Source Code Pro everywhere, green-first palette
+   (green #4caf50 as the accent, solved-green #66cda3, unsolved-gray #a8a8a8),
+   large border radii on interactive elements. Teal (manytask's small brand
+   accent) marks the current "supposed student" position. */
 
 :root {
   --text: #343a40;
@@ -9,12 +10,12 @@
   --bg: #f8f9fa;
   --panel-bg: #fff;
   --border: #dee2e6;
-  --accent: #17c3b2;
-  --accent-bg: rgba(23, 195, 178, 0.12);
+  --accent: #4caf50;
+  --accent-bg: rgba(76, 175, 80, 0.12);
   --solved: #66cda3;
   --solved-hover: #76ddb3;
   --unsolved-bg: rgba(168, 168, 168, 0.18);
-  --green: #4caf50;
+  --marker: #17c3b2;
   --warning: #ef6c00;
   --danger: #dc3545;
 
@@ -36,10 +37,10 @@
     --bg: #1a1d20;
     --panel-bg: #212529;
     --border: #3a4046;
-    --accent: #1fd4c2;
-    --accent-bg: rgba(31, 212, 194, 0.15);
+    --accent: #66bb6a;
+    --accent-bg: rgba(102, 187, 106, 0.15);
     --unsolved-bg: rgba(168, 168, 168, 0.12);
-    --green: #66bb6a;
+    --marker: #1fd4c2;
     --warning: #ffa726;
     --danger: #ef5b6a;
   }

@@ -58,11 +58,11 @@ export function EcdfChart({ students, scale, score }: Props) {
           ))}
           <ReferenceLine
             x={score}
-            stroke="#4caf50"
+            stroke="#17c3b2"
             strokeWidth={2}
-            label={{ value: 'me', position: 'top', fill: '#4caf50', fontSize: 12 }}
+            label={{ value: 'me', position: 'top', fill: '#17c3b2', fontSize: 12 }}
           />
-          <Line type="stepAfter" dataKey="fraction" stroke="#17c3b2" dot={false} strokeWidth={2} isAnimationActive={false} />
+          <Line type="stepAfter" dataKey="fraction" stroke="#4caf50" dot={false} strokeWidth={2} isAnimationActive={false} />
         </LineChart>
       </ResponsiveContainer>
     </section>

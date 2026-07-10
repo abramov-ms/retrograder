@@ -209,7 +209,7 @@
 
 /* The dark border keeps the checked box visible on the solved-green row. */
 .task-row input[type='checkbox']:checked {
-  background-color: var(--green);
+  background-color: var(--accent);
   border-color: #08060d;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5 6.5 12 13 4.5' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-size: 13px;
@@ -356,7 +356,7 @@
   margin-right: 2px; /* the whole arrow stays left of the knob circles */
   transform: translateY(-50%);
   pointer-events: none;
-  color: var(--green);
+  color: var(--marker);
 }
 
 /* A real arrow: shaft plus head. */

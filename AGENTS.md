@@ -111,9 +111,11 @@ fall back silently to stored/default state.
 - Plain CSS (`App.css` / `index.css`); no CSS framework.
 - The design mimics **Manytask** (github.com/manytask/manytask), the course's
   actual grading system: Source Code Pro (self-hosted via @fontsource)
-  monospace everywhere, green-ish palette — brand teal `#17c3b2` for accents,
-  `#66cda3` for solved tasks / histogram bars (black text on green),
-  gray `#a8a8a8`-tinted rows for unsolved, orange `#f0ad4e` for threshold
+  monospace everywhere, green-first palette — green `#4caf50` as the accent
+  (tabs, knobs, scores, checkboxes, ECDF curve), `#66cda3` for solved tasks /
+  histogram bars (black text on green), teal `#17c3b2` (`--marker`) reserved
+  for the current-student markers (scale arrow, ECDF "me" line), gray
+  `#a8a8a8`-tinted rows for unsolved, orange `#f0ad4e` for threshold
   markers — plus large (20px) border radii on panels and buttons, and
   1px text-colored borders around task groups (like manytask lectures).
 - CSV import must be forgiving: skip bad rows and report a summary
