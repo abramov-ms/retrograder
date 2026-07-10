@@ -44,7 +44,9 @@ browser drag/text-selection is suppressed via preventDefault on pointerdown.
 Knobs at (nearly) the same value spread into side-by-side columns (lowest
 grade leftmost) instead of hiding behind each other, and pressing a specific
 knob drags exactly that knob; value labels share one lane right of the knob
-columns, with equal thresholds sharing a single label.
+columns, with equal thresholds sharing a single label. A green marker left of
+the track (arrow + "N pts / grade G") shows where the current what-if task
+selection lands; near the track top its text flips below the arrow.
 Knobs are clamped between their neighbors
 (`moveThreshold`), so the scale is monotonic by construction — invalid
 configurations cannot be entered. The track's top is the course's total

@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import { moveThreshold, nearestThreshold } from '../model/grading'
+import { gradeFor, moveThreshold, nearestThreshold } from '../model/grading'
 import { MIN_GRADE } from '../model/types'
 import type { GradingScale } from '../model/types'
 
@@ -8,9 +8,11 @@ interface Props {
   onChange: (scale: GradingScale) => void
   // Top end of the track: the course's total points (derived from the tasks).
   maxPoints: number
+  // Current what-if total; shown as a marker on the track.
+  score: number
 }
 
-export function ScaleEditor({ scale, onChange, maxPoints }: Props) {
+export function ScaleEditor({ scale, onChange, maxPoints, score }: Props) {
   const trackRef = useRef<HTMLDivElement>(null)
   const knobRefs = useRef<(HTMLDivElement | null)[]>([])
   const draggingIndex = useRef<number | null>(null)
@@ -106,6 +108,15 @@ export function ScaleEditor({ scale, onChange, maxPoints }: Props) {
       >
         <div className="multi-slider-hitbox" />
         <div className="multi-slider-track" />
+        {/* Where the currently selected tasks land on the scale. */}
+        <div className="score-marker" style={{ top: `${percentFromTop(Math.min(score, sliderMax))}%` }}>
+          <div className="score-marker-arrow" />
+          <div className="score-marker-text">
+            {score} pts
+            <br />
+            grade {gradeFor(score, scale)}
+          </div>
+        </div>
         <div
           className="slider-knob slider-knob-fixed"
           style={{ top: '100%', zIndex: 0 }}

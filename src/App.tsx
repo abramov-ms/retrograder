@@ -1,4 +1,4 @@
-import { allTasks, clampScale, maxScore } from './model/grading'
+import { allTasks, clampScale, maxScore, totalScore } from './model/grading'
 import { RetroView } from './components/RetroView'
 import { ScaleEditor } from './components/ScaleEditor'
 import { TaskList } from './components/TaskList'
@@ -48,7 +48,12 @@ export default function App() {
         <div className="split-right">
           {/* One persistent editor for both modes: remounting it on tab
               switches makes the labels flicker while the track re-measures. */}
-          <ScaleEditor scale={effectiveScale} onChange={setScale} maxPoints={maxPoints} />
+          <ScaleEditor
+            scale={effectiveScale}
+            onChange={setScale}
+            maxPoints={maxPoints}
+            score={totalScore(allTasks(groups))}
+          />
         </div>
       </div>
     </div>

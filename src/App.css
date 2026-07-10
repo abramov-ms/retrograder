@@ -272,7 +272,7 @@
   text-align: center;
   font-size: 12px;
   opacity: 0.6;
-  margin-left: 13px;
+  margin: 0 auto;
 }
 
 .multi-slider {
@@ -280,7 +280,9 @@
   flex: 1;
   height: 480px; /* fallback when the panel doesn't stretch (narrow screens) */
   min-height: 200px;
-  margin: 13px 0 13px 13px;
+  /* Auto margins center the track in the panel; the score marker hangs to
+     the left and the value labels to the right of it. */
+  margin: 13px auto;
   width: 26px;
   cursor: pointer;
   touch-action: none;
@@ -302,6 +304,52 @@
   bottom: -13px;
   left: -20px;
   right: -110px;
+}
+
+/* Current what-if position: arrow left of the knobs, score + grade above. */
+.score-marker {
+  position: absolute;
+  right: 100%;
+  margin-right: 2px; /* the whole arrow stays left of the knob circles */
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--green);
+}
+
+/* A real arrow: shaft plus head. */
+.score-marker-arrow {
+  display: flex;
+  align-items: center;
+}
+
+.score-marker-arrow::before {
+  content: '';
+  width: 72px; /* 81px arrow in total, together with the 9px head */
+  height: 3px;
+  border-radius: 1.5px;
+  background: currentColor;
+}
+
+.score-marker-arrow::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 9px solid currentColor;
+}
+
+.score-marker-text {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .multi-slider-track {
