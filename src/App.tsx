@@ -4,7 +4,7 @@ import { encodeShareState, decodeShareState } from './model/share'
 import { RetroView } from './components/RetroView'
 import { ScaleEditor } from './components/ScaleEditor'
 import { TaskList } from './components/TaskList'
-import { defaultScale, defaultStudents, migratedDefaultGroups, normalizeScale } from './state/defaults'
+import { defaultGroups, defaultScale, defaultStudents, migratedDefaultGroups, normalizeScale } from './state/defaults'
 import { useLocalStorageState } from './state/useLocalStorageState'
 import type { GradingScale, Student, TaskGroup } from './model/types'
 import './App.css'
@@ -51,6 +51,13 @@ export default function App() {
   const effectiveScale = clampScale(scale, maxPoints)
   const score = totalScore(allTasks(groups))
 
+  const reset = () => {
+    if (!window.confirm('Reset tasks, the grading scale, and imported students to the defaults?')) return
+    setGroups(defaultGroups)
+    setScale(defaultScale)
+    setStudents([]) // falls back to the bundled cohort
+  }
+
   const [copied, setCopied] = useState(false)
   const share = async () => {
     const url = `${window.location.origin}${window.location.pathname}?s=${encodeShareState({
@@ -79,9 +86,12 @@ export default function App() {
             Retro
           </button>
         </nav>
-        <button className="share-button" onClick={share}>
-          {copied ? 'Link copied!' : 'Share'}
-        </button>
+        <div className="header-actions">
+          <button className="reset-button" onClick={reset}>
+            Reset
+          </button>
+          <button onClick={share}>{copied ? 'Link copied!' : 'Share'}</button>
+        </div>
       </header>
       <div className="split-view">
         <div className="split-left">
