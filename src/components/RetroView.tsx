@@ -16,13 +16,14 @@ interface Props {
 export function RetroView({ students, onStudentsChange, scale, score }: Props) {
   return (
     <>
-      <CsvImport studentCount={students.length} onImport={onStudentsChange} />
       {students.length > 0 && (
         <>
           <GradeHistogram students={students} scale={scale} />
           <EcdfChart students={students} scale={scale} score={score} />
         </>
       )}
+      {/* Most discussions use the bundled cohort, so importing goes last. */}
+      <CsvImport studentCount={students.length} onImport={onStudentsChange} />
     </>
   )
 }
