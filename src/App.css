@@ -397,6 +397,90 @@ button:disabled:hover {
 
 /* Scale editor */
 
+.scale-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.scale-copy {
+  position: relative;
+}
+
+/* A copy glyph drawn as two sheets. */
+.copy-button {
+  position: relative;
+  width: 34px;
+  height: 30px;
+  padding: 0;
+}
+
+.copy-button::before,
+.copy-button::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 12px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+}
+
+.copy-button::before {
+  top: 6px;
+  left: 8px;
+}
+
+.copy-button::after {
+  top: 10px;
+  left: 12px;
+  background: var(--panel-bg);
+}
+
+/* Just copied: the sheets become a check mark for a moment. */
+.copy-button.copied {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.copy-button.copied::before {
+  width: 11px;
+  height: 6px;
+  border: solid currentColor;
+  border-width: 0 0 2px 2px;
+  border-radius: 1px;
+  background: none;
+  transform: rotate(-45deg);
+  top: 9px;
+  left: 10px;
+}
+
+.copy-button.copied::after {
+  display: none;
+}
+
+/* Preview of the text to be copied, styled like the chart tooltips. */
+.scale-copy-tooltip {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  padding: 10px 14px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre;
+  text-align: left;
+}
+
+.scale-copy:hover .scale-copy-tooltip {
+  display: block;
+}
+
 .slider-end {
   width: 26px;
   text-align: center;

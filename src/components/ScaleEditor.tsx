@@ -1,14 +1,8 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import { gradeFor, moveThreshold, nearestThreshold } from '../model/grading'
+import { formatScaleRu } from '../model/format'
+import { gradeFor, gradeQuality, moveThreshold, nearestThreshold } from '../model/grading'
 import { MIN_GRADE } from '../model/types'
 import type { GradingScale } from '../model/types'
-
-// Grade quality bands: 3-4 okay, 5-7 good, 8-10 excellent.
-function knobBand(grade: number): string {
-  if (grade >= 8) return 'knob-excellent'
-  if (grade >= 5) return 'knob-good'
-  return 'knob-okay'
-}
 
 interface Props {
   scale: GradingScale
@@ -23,6 +17,18 @@ interface Props {
 }
 
 export function ScaleEditor({ scale, onChange, onCommit, maxPoints, score }: Props) {
+  const [copied, setCopied] = useState(false)
+  const copyScale = async () => {
+    const text = formatScaleRu(scale)
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {
+      window.prompt('Скопируйте шкалу:', text)
+    }
+  }
+
   const trackRef = useRef<HTMLDivElement>(null)
   const knobRefs = useRef<(HTMLDivElement | null)[]>([])
   const draggingIndex = useRef<number | null>(null)
@@ -89,7 +95,19 @@ export function ScaleEditor({ scale, onChange, onCommit, maxPoints, score }: Pro
 
   return (
     <section className="panel scale-panel">
-      <h2>Grading scale</h2>
+      <div className="scale-header">
+        <h2>Grading scale</h2>
+        <div className="scale-copy">
+          {/* The icon briefly turns into a check mark after copying. */}
+          <button
+            className={copied ? 'copy-button copied' : 'copy-button'}
+            aria-label="Copy the scale"
+            onClick={copyScale}
+          />
+          {/* Chart-tooltip-styled preview of the exact text to be copied. */}
+          <div className="scale-copy-tooltip">{formatScaleRu(scale)}</div>
+        </div>
+      </div>
       <p className="hint">Drag anywhere on the track to move the nearest knob.</p>
       <div className="slider-end">{sliderMax}</div>
       {/* One drag surface for the whole editor: pressing anywhere grabs the
@@ -153,7 +171,7 @@ export function ScaleEditor({ scale, onChange, onCommit, maxPoints, score }: Pro
             aria-valuemin={index > 0 ? scale[index - 1] : 0}
             aria-valuemax={index < scale.length - 1 ? scale[index + 1] : sliderMax}
             aria-valuenow={threshold}
-            className={`slider-knob ${knobBand(MIN_GRADE + 1 + index)}`}
+            className={`slider-knob knob-${gradeQuality(MIN_GRADE + 1 + index)}`}
             style={{
               top: `${percentFromTop(threshold)}%`,
               left: 13 + knobColumns[index] * 30,

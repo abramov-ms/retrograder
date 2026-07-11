@@ -15,6 +15,16 @@ export function gradeFor(score: number, scale: GradingScale): number {
   return grade
 }
 
+// Grade quality bands: 3-4 okay, 5-7 good, 8-10 excellent. Drives the knob
+// colors and the Russian labels in the clipboard export.
+export type GradeQuality = 'okay' | 'good' | 'excellent'
+
+export function gradeQuality(grade: number): GradeQuality {
+  if (grade >= 8) return 'excellent'
+  if (grade >= 5) return 'good'
+  return 'okay'
+}
+
 export function totalScore(tasks: Task[]): number {
   return tasks.reduce((sum, task) => sum + (task.solved ? task.points : 0), 0)
 }

@@ -80,6 +80,14 @@ nudges commit on key release), and a cancelled task drag restores the
 checkpoint. While an input is focused, Ctrl+Z is left to the browser's native
 per-field undo — the global shortcut only applies outside inputs.
 
+## Clipboard export
+
+The copy button in the scale panel's corner copies the agreed scale as
+Russian text for course announcements (`formatScaleRu` in
+`src/model/format.ts`): one `<score> -> <уд.|хор.|отл.> <grade>` line per
+grade, bands matching the knob colors (`gradeQuality`). Hovering shows a
+chart-tooltip-styled preview of the exact text.
+
 ## Sharing
 
 The app stays backend-less: the Share button in the header encodes the task
