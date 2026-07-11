@@ -27,13 +27,13 @@ backend and none is planned. All state lives in the browser (localStorage).
   first column as nickname and the *last* as score, so legacy files with
   extra middle columns still work. Grades are derived from the total score
   via the current scale. A header row may or may not be present.
-  `scripts/convert_grades.py` produces this file from a Manytask grades
-  export (one column per task, 1 = solved; by default read from
-  `grades.csv` at the repo root) by joining it with `src/data/tasks.yaml`
-  and adding the export's seminar points on top. The converted file is
-  committed at `src/data/grades.csv` and bundled as the default retro
-  dataset — shown until the user imports another file. Raw exports contain
-  student names — don't commit them, delete them after converting.
+  The file committed at `src/data/grades.csv` is bundled as the default
+  retro dataset — shown until the user imports another file. The current
+  bundled data is approximate: it was derived from a binary solved/unsolved
+  Manytask export (task points + seminar points) and does not account for
+  deadline decay; a more accurate table is expected from the course staff.
+  Raw exports contain student names — never commit those, only the
+  nickname/score form.
 
 ## The two modes
 

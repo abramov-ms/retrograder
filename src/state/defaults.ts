@@ -49,8 +49,8 @@ export function migratedDefaultGroups(): TaskGroup[] {
   return defaultGroups
 }
 
-// Last year's results (src/data/grades.csv, produced by
-// scripts/convert_grades.py), shown in retro mode until a file is imported.
+// Last year's results (src/data/grades.csv), shown in retro mode until a
+// file is imported.
 export const defaultStudents: Student[] = parseStudentsCsv(gradesCsv).students
 
 // The course's agreed-on scale lives in src/data/scale.csv (score,grade
