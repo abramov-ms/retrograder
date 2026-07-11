@@ -82,11 +82,18 @@ per-field undo — the global shortcut only applies outside inputs.
 
 ## Clipboard export
 
-The copy button in the scale panel's corner copies the agreed scale as
-Russian text for course announcements (`formatScaleRu` in
-`src/model/format.ts`): one `<score> -> <уд.|хор.|отл.> <grade>` line per
-grade, bands matching the knob colors (`gradeQuality`). Hovering shows a
-chart-tooltip-styled preview of the exact text.
+Copy buttons (shared `CopyButton` component: hover shows a
+chart-tooltip-styled preview of the exact text, the icon briefly becomes a
+check mark after copying; formatters in `src/model/format.ts`):
+
+- scale panel corner — the agreed scale as Russian text for course
+  announcements (`formatScaleRu`): one `<score> → <уд.|хор.|отл.> <grade>`
+  line per grade, bands matching the knob colors (`gradeQuality`);
+- tasks panel corner — the task list as tasks.yaml-format YAML
+  (`formatGroupsYaml`), in course order (group order reversed back from the
+  newest-first UI) so it can be pasted straight into `src/data/tasks.yaml`;
+  no hover preview here (`preview={false}`) — the YAML is too long for a
+  tooltip.
 
 ## Sharing
 

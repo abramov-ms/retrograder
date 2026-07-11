@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react'
+import { CopyButton } from './CopyButton'
 import { formatScaleRu } from '../model/format'
 import { gradeFor, gradeQuality, moveThreshold, nearestThreshold } from '../model/grading'
 import { MIN_GRADE } from '../model/types'
@@ -17,18 +18,6 @@ interface Props {
 }
 
 export function ScaleEditor({ scale, onChange, onCommit, maxPoints, score }: Props) {
-  const [copied, setCopied] = useState(false)
-  const copyScale = async () => {
-    const text = formatScaleRu(scale)
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    } catch {
-      window.prompt('Скопируйте шкалу:', text)
-    }
-  }
-
   const trackRef = useRef<HTMLDivElement>(null)
   const knobRefs = useRef<(HTMLDivElement | null)[]>([])
   const draggingIndex = useRef<number | null>(null)
@@ -97,16 +86,7 @@ export function ScaleEditor({ scale, onChange, onCommit, maxPoints, score }: Pro
     <section className="panel scale-panel">
       <div className="scale-header">
         <h2>Grading scale</h2>
-        <div className="scale-copy">
-          {/* The icon briefly turns into a check mark after copying. */}
-          <button
-            className={copied ? 'copy-button copied' : 'copy-button'}
-            aria-label="Copy the scale"
-            onClick={copyScale}
-          />
-          {/* Chart-tooltip-styled preview of the exact text to be copied. */}
-          <div className="scale-copy-tooltip">{formatScaleRu(scale)}</div>
-        </div>
+        <CopyButton text={formatScaleRu(scale)} label="Copy the scale" />
       </div>
       <p className="hint">Drag anywhere on the track to move the nearest knob.</p>
       <div className="slider-end">{sliderMax}</div>

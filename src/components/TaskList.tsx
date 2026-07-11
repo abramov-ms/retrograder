@@ -2,8 +2,10 @@ import { DndContext, PointerSensor, closestCenter, pointerWithin, useSensor, use
 import type { CollisionDetection, DragEndEvent, DragOverEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { formatGroupsYaml } from '../model/format'
 import { allTasks, maxScore, totalScore } from '../model/grading'
 import { newTaskId } from '../state/defaults'
+import { CopyButton } from './CopyButton'
 import { ScorePanel } from './ScorePanel'
 import type { Undoable } from '../state/useUndoable'
 import type { GradingScale, Task, TaskGroup } from '../model/types'
@@ -231,6 +233,7 @@ export function TaskList({ groups, history, scale }: Props) {
           <p className="hint">Check the tasks a student solved; every task counts its full points. Groups don't affect grading.</p>
         </div>
         <ScorePanel tasks={tasks} scale={scale} />
+        <CopyButton text={formatGroupsYaml(groups)} label="Copy the tasks as YAML" preview={false} />
       </div>
       <DndContext
         sensors={sensors}

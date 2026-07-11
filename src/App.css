@@ -404,7 +404,7 @@ button:disabled:hover {
   gap: 12px;
 }
 
-.scale-copy {
+.copy-anchor {
   position: relative;
 }
 
@@ -460,7 +460,7 @@ button:disabled:hover {
 }
 
 /* Preview of the text to be copied, styled like the chart tooltips. */
-.scale-copy-tooltip {
+.copy-tooltip {
   display: none;
   position: absolute;
   top: calc(100% + 6px);
@@ -477,7 +477,7 @@ button:disabled:hover {
   text-align: left;
 }
 
-.scale-copy:hover .scale-copy-tooltip {
+.copy-anchor:hover .copy-tooltip {
   display: block;
 }
 
