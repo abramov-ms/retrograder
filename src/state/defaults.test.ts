@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import gradesCsv from '../data/grades.csv?raw'
+import { parseStudentsCsv } from '../model/csv'
 import { allTasks, isScaleMonotonic, maxScore } from '../model/grading'
 import { defaultGroups, defaultScale, defaultStudents } from './defaults'
 
@@ -25,10 +27,19 @@ describe('default course groups (src/data/tasks.yaml)', () => {
   })
 })
 
+// Deliberately not pinned to exact counts/rows: the bundled table gets
+// replaced from time to time. What must hold is that it parses cleanly.
 describe('defaultStudents (src/data/grades.csv)', () => {
-  it('loads last year\'s cohort', () => {
-    expect(defaultStudents).toHaveLength(313)
-    expect(defaultStudents[0]).toEqual({ nickname: 'MMatvei', score: 1775 })
+  it("loads last year's cohort without skipping rows", () => {
+    const parsed = parseStudentsCsv(gradesCsv)
+    expect(parsed.errors).toEqual([])
+    expect(defaultStudents).toEqual(parsed.students)
+    expect(defaultStudents.length).toBeGreaterThan(100)
+    for (const student of defaultStudents) {
+      expect(student.nickname).not.toBe('')
+      expect(Number.isFinite(student.score)).toBe(true)
+      expect(student.score).toBeGreaterThanOrEqual(0)
+    }
   })
 })
 
