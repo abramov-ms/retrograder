@@ -4,6 +4,14 @@
    large border radii on interactive elements. Teal (manytask's small brand
    accent) marks the current "supposed student" position. */
 
+/* Excalidraw's hand-drawn font (OFL 1.1, see assets/Excalifont-LICENSE.txt);
+   used for the app title only, so the Latin subset suffices. */
+@font-face {
+  font-family: 'Excalifont';
+  src: url('./assets/Excalifont-Regular.woff2') format('woff2');
+  font-display: swap;
+}
+
 :root {
   --text: #343a40;
   --text-h: #212529;
