@@ -150,7 +150,7 @@ export function TaskList({ groups, history, scale }: Props) {
 
   const addTask = (group: TaskGroup) => {
     updateGroup(group.id, {
-      tasks: [...group.tasks, { id: newTaskId(), name: `Task ${group.tasks.length + 1}`, points: 10, solved: false }],
+      tasks: [...group.tasks, { id: newTaskId(), name: `task-${group.tasks.length + 1}`, points: 10, solved: false }],
     })
   }
 
@@ -159,7 +159,7 @@ export function TaskList({ groups, history, scale }: Props) {
   }
 
   const addGroup = () => {
-    history.commit([...groups, { id: newTaskId(), name: `Group ${groups.length + 1}`, tasks: [] }])
+    history.commit([...groups, { id: newTaskId(), name: `group-${groups.length + 1}`, tasks: [] }])
   }
 
   const removeGroup = (groupId: string) => {
