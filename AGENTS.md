@@ -100,7 +100,15 @@ check mark after copying; formatters in `src/model/format.ts`):
 The app stays backend-less: the Share button in the header encodes the task
 groups + grading scale into a compact versioned payload (`src/model/share.ts`,
 lz-string `compressToEncodedURIComponent`) and copies a URL with it as the
-`?s=` query parameter. On load, a valid `?s=` overrides the visitor's stored
+`?s=` query parameter. To keep URLs short enough for messengers to linkify
+(~250 chars for a typical state), known group/task names and common scores
+are referenced by index into the **append-only** dictionaries in
+`src/model/shareDictionary.ts` — never reorder or remove entries there, only
+append (indices are baked into previously shared URLs; a test guards that
+tasks.yaml stays covered). Anything off-dictionary is encoded as a literal:
+in every ref, a number is a dictionary index and a string is a literal.
+Scores are dictionaried separately from task names, so rebalancing costs
+doesn't grow URLs. On load, a valid `?s=` overrides the visitor's stored
 groups/scale (then persists as usual) and is stripped from the URL via
 `history.replaceState`. Students are *not* shared — the bundled cohort is the
 same for everyone. Task/group ids are regenerated on decode; invalid payloads
