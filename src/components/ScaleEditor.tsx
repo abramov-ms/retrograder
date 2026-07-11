@@ -5,6 +5,11 @@ import { gradeFor, gradeQuality, moveThreshold, nearestThreshold } from '../mode
 import { MIN_GRADE } from '../model/types'
 import type { GradingScale } from '../model/types'
 
+// Horizontal step between side-by-side knob columns: ~60% of the 26px knob,
+// so stacked knobs overlap ~40% - compact, yet the grade numbers stay
+// readable and each knob keeps an exposed strip to grab.
+const KNOB_COLUMN_STEP = 16
+
 interface Props {
   scale: GradingScale
   // Live update while a knob moves; onCommit marks the undo boundary when
@@ -54,10 +59,12 @@ export function ScaleEditor({ scale, onChange, onCommit, maxPoints, score }: Pro
 
   // Knobs too close to the one below spread into side-by-side columns
   // (lowest grade leftmost), so stacked knobs stay visible and grabbable.
+  // They may overlap vertically up to ~40% (the same amount columns overlap
+  // horizontally) before bouncing sideways.
   const knobColumns: number[] = []
   scale.forEach((threshold, index) => {
     const gapPx = index > 0 ? ((threshold - scale[index - 1]) / sliderMax) * trackHeight : Infinity
-    knobColumns.push(gapPx < 28 ? knobColumns[index - 1] + 1 : 0)
+    knobColumns.push(gapPx < KNOB_COLUMN_STEP ? knobColumns[index - 1] + 1 : 0)
   })
 
   // Labels of a colliding cluster sit right of that cluster's own rightmost
@@ -154,7 +161,7 @@ export function ScaleEditor({ scale, onChange, onCommit, maxPoints, score }: Pro
             className={`slider-knob knob-${gradeQuality(MIN_GRADE + 1 + index)}`}
             style={{
               top: `${percentFromTop(threshold)}%`,
-              left: 13 + knobColumns[index] * 30,
+              left: 13 + knobColumns[index] * KNOB_COLUMN_STEP,
               // Lower grades in front where columns still partially overlap:
               // grabbing a stack from below moves the lowest grade first.
               zIndex: scale.length - index,
@@ -185,7 +192,10 @@ export function ScaleEditor({ scale, onChange, onCommit, maxPoints, score }: Pro
             {MIN_GRADE + 1 + index}
             <span
               className="slider-value"
-              style={{ left: 34 + (clusterMaxColumn[index] - knobColumns[index]) * 30 + labelColumns[index] * 30 }}
+              style={{
+                left:
+                  34 + (clusterMaxColumn[index] - knobColumns[index]) * KNOB_COLUMN_STEP + labelColumns[index] * 30,
+              }}
             >
               {threshold}
             </span>
