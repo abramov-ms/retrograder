@@ -9,9 +9,9 @@ describe('default course groups (src/data/tasks.yaml)', () => {
     expect(maxScore(allTasks(defaultGroups))).toBe(2975)
   })
 
-  it('shows the newest groups first', () => {
-    expect(defaultGroups[0].name).toBe('15-bonus')
-    expect(defaultGroups[defaultGroups.length - 1].name).toBe('01-data-representation')
+  it('keeps the course order (oldest group first)', () => {
+    expect(defaultGroups[0].name).toBe('01-data-representation')
+    expect(defaultGroups[defaultGroups.length - 1].name).toBe('15-bonus')
   })
 
   it('merges interleaved rows of one group', () => {

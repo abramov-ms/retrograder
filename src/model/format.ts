@@ -18,18 +18,13 @@ export function formatScaleRu(scale: GradingScale): string {
     .join('\n')
 }
 
-// The task list in the src/data/tasks.yaml format. The file keeps course
-// order (oldest group first) while the UI shows newest first, so the group
-// order is reversed back: pasting the output into tasks.yaml reproduces the
-// current app state.
+// The task list in the src/data/tasks.yaml format, in the displayed order:
+// pasting the output into tasks.yaml reproduces the current app state.
 export function formatGroupsYaml(groups: TaskGroup[]): string {
   return stringify(
-    groups
-      .slice()
-      .reverse()
-      .map((group) => ({
-        name: group.name,
-        tasks: group.tasks.map((task) => ({ name: task.name, score: task.points })),
-      })),
+    groups.map((group) => ({
+      name: group.name,
+      tasks: group.tasks.map((task) => ({ name: task.name, score: task.points })),
+    })),
   )
 }

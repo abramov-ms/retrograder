@@ -90,10 +90,9 @@ check mark after copying; formatters in `src/model/format.ts`):
   announcements (`formatScaleRu`): one `<score> → <уд.|хор.|отл.> <grade>`
   line per grade, bands matching the knob colors (`gradeQuality`);
 - tasks panel corner — the task list as tasks.yaml-format YAML
-  (`formatGroupsYaml`), in course order (group order reversed back from the
-  newest-first UI) so it can be pasted straight into `src/data/tasks.yaml`;
-  no hover preview here (`preview={false}`) — the YAML is too long for a
-  tooltip.
+  (`formatGroupsYaml`), in the displayed order, so it can be pasted straight
+  into `src/data/tasks.yaml`; no hover preview here (`preview={false}`) —
+  the YAML is too long for a tooltip.
 
 ## Sharing
 
@@ -138,9 +137,10 @@ fall back silently to stored/default state.
   falls back to an evenly spread scale if it doesn't cover all grades.
 - `src/data/tasks.yaml` — the course's real task list (array of groups, each
   with tasks + scores), hand-editable; converted from the instructor's CSV
-  export. `defaults.ts` parses it at runtime (`yaml` package, `?raw` import)
-  and reverses the group order so the newest groups (e.g. `15-bonus`) appear
-  at the top of the UI. The default grading scale is derived from its total.
+  export. `defaults.ts` parses it at runtime (`yaml` package, `?raw` import);
+  the UI shows groups in the file's course order (oldest first — new groups
+  are appended at the bottom, matching the add buttons). The fallback grading
+  scale is derived from its total.
 - `src/components/` — React components, one per file. `App.tsx` owns all
   shared state (tasks, scale, students, mode) and passes it down as props.
 - Plain CSS (`App.css` / `index.css`); no CSS framework.

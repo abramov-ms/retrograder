@@ -22,18 +22,16 @@ interface CourseGroup {
   tasks: CourseTask[]
 }
 
-// The course's real task list lives in src/data/tasks.yaml (course order).
-// The UI shows groups newest-first: late-semester tasks are the ones under
-// discussion, so they belong near the top.
-export const defaultGroups: TaskGroup[] = (parse(courseTasksYaml) as CourseGroup[])
-  .map((group) => ({
-    id: newTaskId(),
-    name: group.name,
-    tasks: group.tasks.map(
-      (task): Task => ({ id: newTaskId(), name: task.name, points: task.score, solved: false }),
-    ),
-  }))
-  .reverse()
+// The course's real task list lives in src/data/tasks.yaml, in course order
+// (oldest group first) — the same order the UI shows, so new groups added at
+// the bottom continue the sequence.
+export const defaultGroups: TaskGroup[] = (parse(courseTasksYaml) as CourseGroup[]).map((group) => ({
+  id: newTaskId(),
+  name: group.name,
+  tasks: group.tasks.map(
+    (task): Task => ({ id: newTaskId(), name: task.name, points: task.score, solved: false }),
+  ),
+}))
 
 // Older versions stored a flat task list under this key; wrap it in one group.
 export function migratedDefaultGroups(): TaskGroup[] {

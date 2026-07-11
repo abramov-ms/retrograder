@@ -1,5 +1,4 @@
-# Course tasks (converted from scores.csv).
-# Groups are in course order; the UI shows them newest-first.
+# Course tasks (converted from scores.csv), in course order.
 - name: 01-data-representation
   tasks:
     - name: ieee754-clf
