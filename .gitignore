@@ -23,7 +23,4 @@ dist-ssr
 *.sln
 *.sw?
 
-# The raw Manytask export at the repo root (src/data/grades.csv, the
-# converted three-column version, is committed on purpose)
-/grades.csv
 __pycache__/
